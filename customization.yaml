@@ -1,0 +1,14 @@
+customization:
+  extraKernelArgs:
+    - console=ttyS0,115200
+    - ip=10.0.63.254::10.0.0.1:255.255.192.0:talos-preinstall:eth0:off
+    - net.ifname=0
+    - talos.config=http://10.0.0.1:8000/machineconfig.yaml
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/amd-ucode
+      - siderolabs/intel-ucode
+      - siderolabs/iscsi-tools
+      - siderolabs/nvidia-container-toolkit-lts
+      - siderolabs/nvidia-fabricmanager-lts
+      - siderolabs/nvidia-open-gpu-kernel-modules-lts

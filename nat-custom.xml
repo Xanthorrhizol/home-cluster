@@ -1,0 +1,13 @@
+<network>
+  <name>cluster</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='cluster-br0' stp='on' delay='0'/>
+  <mac address='11:33:55:77:99:bb'/>
+  <ip address='10.0.0.1' netmask='255.255.192.0'>
+  </ip>
+</network>
+
