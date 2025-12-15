@@ -43,7 +43,7 @@ function validate() {
   fi
 }
 
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 4 ]; then
   usage
   exit 1
 fi
