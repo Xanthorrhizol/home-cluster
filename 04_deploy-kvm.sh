@@ -81,7 +81,7 @@ if [ ! -z $ISO ]; then
     --cpu host-passthrough \
     --cdrom $ISO \
     --disk path=$IMAGE,size=$DISK \
-    --graphics=vnc,password=1234 \
+    --graphics=none \
     --os-variant=$OS_VARIANT \
     --console pty,target_type=serial \
     --network bridge=cluster-br0,model=virtio,driver_name=vhost,driver.queues=4
