@@ -4,13 +4,13 @@ mkdir config-$RUN_DT
 cd config-$RUN_DT 
 CURRENT_DIR=$(pwd)
 
-CONTROL_PLANE_IP=("10.0.2.1/18" "10.0.2.2/18" "10.0.2.3/18")
-WORKER_IP=("10.0.3.1/18" "10.0.3.2/18")
+CONTROL_PLANE_IP=("10.0.1.1/14" "10.0.1.2/14" "10.0.1.3/14")
+WORKER_IP=("10.0.2.1/14" "10.0.2.2/14")
 CLUSTER_NAME=k8s-cluster
 NODE_PREFIX="k8s"
-ENDPOINT="10.0.2.0/18" # Virtual IP of the cluster
+ENDPOINT="10.0.1.0" # Virtual IP of the cluster
 GW_IP="10.0.0.1"
-NAMESERVER_IP="10.0.1.1"
+NAMESERVER_IP="10.1.0.1"
 
 # create talos secrets
 INITIAL_CONTROL_PLANE_IP=$(echo ${CONTROL_PLANE_IP[0]} | cut -d '/' -f 1)
