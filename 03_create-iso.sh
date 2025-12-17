@@ -1,6 +1,6 @@
 #!/bin/bash
 function usage() {
-  echo "Usage: $0 <machine architecture> <talos-linux version> <customization file> <output file>"
+  echo "Usage: $0 <machine architecture> <talos-linux version> <customization file>"
   echo "Example: $0 amd64 v1.11.5 customization.yaml talos.iso"
   echo "         $0 arm64 v1.11.5 customization.yaml talos.iso"
 }
@@ -53,8 +53,20 @@ TALOS_LINUX_VERSION=$2
 CUSTOMIZATION=$3
 OUTPUT=$4
 
-talosctl gen iso \
-  --output $OUTPUT \
-  --arch $ARCH \
-  --version $TALOS_LINUX_VERSION \
-  --customization $CUSTOMIZATION
+SCHEMATIC_ID=$(curl -XPOST https://factory.talos.dev/schematics \
+  -H "Content-Type: application/json; charset=utf-8" \
+  -H "Accept: application/json" \
+  -d $"$(cat $CUSTOMIZATION | yq)" 2>/dev/null | jq '.id' | tr -d '"')
+
+read -p "Download iso image with schematic_id=$SCHEMATIC_ID. Press enter to continue" -n 1 -r
+
+FIND_RESULT=$(curl -XGET https://factory.talos.dev/image/$SCHEMATIC_ID/$TALOS_LINUX_VERSION/metal-$ARCH.iso)
+
+if [ $(echo $FIND_RESULT | htmlq -t) == "Found." ]; then
+  DOWNLOAD_URL=$(echo $FIND_RESULT | htmlq a -a href)
+  curl $DOWNLOAD_URL -o $OUTPUT
+else
+  echo "Failed to download iso image with schematic_id=$SCHEMATIC_ID"
+  echo $FIND_RESULT
+  exit 1
+fi
