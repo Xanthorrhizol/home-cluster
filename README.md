@@ -7,7 +7,6 @@
 - Cluster Provisioner: none
 - Storage: NFS
 - DNS: bind
-- Proxy: HaProxy
 
 ## HW Info
 
@@ -18,16 +17,16 @@
 
 ## VM Info
 
-- Proxy & DNS(1): 2 vCPU, 4GB RAM, 10GB Disk, Alpine Linux 3.21
-- Master(3): 2 vCPU, 4GB RAM, 10GB Disk, Talos Linux 1.11.5
-- Worker(2): 6 vCPU, 20GB RAM, 32GB Disk, Talos Linux 1.11.5
+- DNS(1): 2 vCPU, 4GB RAM, 10GB Disk, Alpine Linux 3.24
+- Master(3): 2 vCPU, 4GB RAM, 10GB Disk, Talos Linux 1.11.6
+- Worker(2): 6 vCPU, 20GB RAM, 32GB Disk, Talos Linux 1.11.6
 
 ## Todo
 
 - [x] Create basic cluster
-- [ ] Deploy [rustcost](https://github.com/rustcost/rustcost-core)
+- [x] Deploy [rustcost](https://github.com/rustcost/rustcost-core)
 - [ ] Make personal NAS
-  - OS: OpenMediaVault
+  - OS: Proxmox + OpenMediaVault
   - Motherboard: B365 M AORUS ELITE
   - CPU: Intel i7-9700K (4 Core, 8 Thread)
   - RAM: 16GB
