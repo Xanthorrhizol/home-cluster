@@ -11,6 +11,7 @@ NODE_PREFIX="k8s"
 ENDPOINT="10.0.1.0" # Virtual IP of the cluster
 GW_IP="10.0.0.1"
 NAMESERVER_IP="10.1.0.1"
+NIC="eth0"
 
 # create talos secrets
 INITIAL_CONTROL_PLANE_IP=$(echo ${CONTROL_PLANE_IP[0]} | cut -d '/' -f 1)
@@ -28,7 +29,7 @@ machine:
   network:
     hostname: $NODE_PREFIX-cp-$I.server.xanthorrhizol.local
     interfaces:
-      - interface: ens2  # From control plane node
+      - interface: eth0  # From control plane node
         dhcp: false
         addresses:
           - $IP
@@ -57,7 +58,7 @@ machine:
   network:
     hostname: $NODE_PREFIX-w-$I.server.xanthorrhizol.local
     interfaces:
-      - interface: ens2  # From control plane node
+      - interface: $NIC  # From control plane node
         dhcp: false
         addresses:
           - $IP
