@@ -2,9 +2,9 @@
 
 ## Cluster Info
 
-- OS: Talos Linux 1.11.x
+- OS: Alpine Linux 3.24
 - Nodes: 3 Master, 2 Worker by KVM
-- Cluster Provisioner: none
+- Cluster Provisioner: kubeadm
 - Storage: NFS
 - DNS: bind
 
@@ -18,13 +18,14 @@
 ## VM Info
 
 - DNS(1): 2 vCPU, 4GB RAM, 10GB Disk, Alpine Linux 3.24
-- Master(3): 2 vCPU, 4GB RAM, 10GB Disk, Talos Linux 1.11.6
-- Worker(2): 6 vCPU, 20GB RAM, 32GB Disk, Talos Linux 1.11.6
+- Master(3): 2 vCPU, 4GB RAM, 10GB Disk, Alpine Linux 3.24
+- Worker(2): 6 vCPU, 20GB RAM, 32GB Disk, Alpine Linux 3.24
 
 ## Todo
 
 - [x] Create basic cluster
 - [x] Deploy [rustcost](https://github.com/rustcost/rustcost-core)
+- [ ] Attach GPU into KVM(GPU Passthrough)
 - [ ] Make personal NAS
   - OS: Proxmox + OpenMediaVault
   - Motherboard: B365 M AORUS ELITE

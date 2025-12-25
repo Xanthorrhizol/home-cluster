@@ -24,7 +24,7 @@ fi
 KVM_NETWORK_XML_PATH=$1
 
 pacman -S --noconfirm virt-install libvirt virt-viewer dnsmasq
-pacman -S --noconfirm talosctl kubectl kubectx helm
+pacman -S --noconfirm kubectl kubectx helm
 pacman -S --noconfirm jq yq htmlq
 
 systemctl enable --now libvirtd
