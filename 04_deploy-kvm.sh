@@ -4,7 +4,7 @@ function usage_msg() {
 }
 
 function check_user() {
-  if [ "$EUID" -ne 0 ] && [ $(groups | grep libvirt | wc -l) -ne 1 ]; then
+  if [ "$EUID" -ne 0 ] && [ $(groups | grep libvirt-qemu | wc -l) -ne 1 ]; then
     echo "Please run as root"
     exit 1
   fi
@@ -73,28 +73,49 @@ fi
 
 validate $NAME $IMAGE $OS_VARIANT $CPUS $MEM $DISK $ISO
 
+OVMF_CODE=/usr/share/OVMF/x64/OVMF_CODE.4m.fd
+OVMF_VARS_TEMPLATE=/usr/share/OVMF/x64/OVMF_VARS.4m.fd
+
+OVMF_VARS=/var/lib/libvirt/qemu/nvram/${NAME}_OVMF_VARS.fd
+mkdir -p $(dirname $OVMF_VARS)
+cp $OVMF_VARS_TEMPLATE $OVMF_VARS
+
+BOOTLOADER_PARAMS="loader=\"$OVMF_CODE\",loader.readonly=yes,loader.type=pflash,nvram=\"$OVMF_VARS\""
+
+if [ $CPUS -gt 4 ]; then
+  QUEUES=4
+else
+  QUEUES=1
+fi
+NETWORK_PARAMS="bridge=cluster-br0,model=virtio,driver_name=vhost,driver.queues=$QUEUES"
 if [ ! -z $ISO ]; then
   virt-install \
     --name $NAME \
+    --machine q35 \
     --ram $MEM \
     --vcpus $CPUS \
     --cpu host-passthrough \
+    --boot $BOOTLOADER_PARAMS \
     --cdrom $ISO \
     --disk path=$IMAGE,size=$DISK \
     --graphics=none \
     --os-variant=$OS_VARIANT \
     --console pty,target_type=serial \
-    --network bridge=cluster-br0,model=virtio,driver_name=vhost,driver.queues=4
+    --video none \
+    --network $NETWORK_PARAMS
 else
   virt-install \
     --name $NAME \
+    --machine q35 \
     --ram $MEM \
     --vcpus $CPUS \
     --cpu host-passthrough \
+    --boot $BOOTLOADER_PARAMS \
     --disk path=$IMAGE,size=$DISK \
     --import \
     --graphics=none \
     --os-variant=$OS_VARIANT \
     --console pty,target_type=serial \
-    --network bridge=cluster-br0,model=virtio,driver_name=vhost,driver.queues=4
+    --video none \
+    --network $NETWORK_PARAMS
 fi
