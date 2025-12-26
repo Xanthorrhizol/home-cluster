@@ -102,6 +102,7 @@ if [ ! -z $ISO ]; then
 else
   virt-install \
     --name $NAME \
+    --import \
     --machine q35 \
     --ram $MEM \
     --vcpus $CPUS \
