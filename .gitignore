@@ -1,2 +1,5 @@
 config-*
 *.tgz
+kubeconfig
+db.*
+named.conf
