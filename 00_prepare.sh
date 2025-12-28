@@ -1,4 +1,5 @@
 #!/bin/bash
+cd $(dirname "$(readlink -f "$0")")
 function usage() {
   echo "Usage: $0 <kvm network xml path>"
 }
