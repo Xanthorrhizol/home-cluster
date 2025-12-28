@@ -94,7 +94,7 @@ if [ ! -z $ISO ]; then
     --boot $BOOTLOADER_PARAMS \
     --cdrom $ISO \
     --disk path=$IMAGE,size=$DISK \
-    --graphics=none \
+    --graphics=vnc,password=1234 \
     --os-variant=$OS_VARIANT \
     --console pty,target_type=serial \
     --video none \

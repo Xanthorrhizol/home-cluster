@@ -18,36 +18,63 @@ NODES=(${CONTROLPLANE_NODES[@]} ${WORKER_NODES[@]})
 for NODE in ${NODES[@]}; do
   scp k8s.conf $NODE:/etc/modules-load.d/k8s.conf
   scp 99-kubernetes.conf $NODE:/etc/sysctl.d/99-kubernetes.conf
-  ssh $NODE -C $" \
-    apk update && apk add \
-      containerd \
-      iptables \
-      ip6tables \
-      ethtool \
-      socat \
-      conntrack-tools \
-      ebtables \
-      curl \
-      ca-certificates \
-      bash \
-      util-linux \
-      kubeadm \
-      kubelet \
-      cni-plugins \
-      openrc"
-  ssh $NODE -C $" \
-    modprobe overlay
-    modprobe br_netfilter
-    sysctl -p /etc/sysctl.d/99-kubernetes.conf"
-  ssh $NODE -C $" \
-    swapoff -a && \
-    sed -i '/ swap / s/^/#/' /etc/fstab && \
-    rc-service containerd restart && \
-    rc-update add containerd default && \
-    rc-service kubelet restart && \
-    rc-update add kubelet default && \
-    containerd config default | sed 's/SystemdCgroup = true/SystemdCgroup = false/g' > /etc/containerd/config.toml && \
-    rc-service containerd restart"
+  if [ $NODE == $GPU_NODE ]; then
+    ssh $NODE -C $" \
+      apt update && \
+      apt install -y \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release \
+        containerd && \
+      apt update && \
+      containerd config default | sed 's/SystemdCgroup = true/SystemdCgroup = false/g' > /etc/containerd/config.toml && \
+      systemctl restart containerd && \
+      systemctl enable containerd && \
+      snap install kubeadm kubelet"
+    ssh $NODE -C $" \
+      curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
+      echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list && \
+      apt-get update && \
+      apt-get install -y kubelet kubeadm && \
+      apt-mark hold kubelet kubeadm && \
+      systemctl enable --now kubelet"
+    ssh $NODE -C $" \
+      swapoff -a && \
+      sed -i '/ swap / s/^/#/' /etc/fstab"
+  else
+    ssh $NODE -C $" \
+      apk update && apk add \
+        containerd \
+        iptables \
+        ip6tables \
+        ethtool \
+        socat \
+        conntrack-tools \
+        ebtables \
+        curl \
+        ca-certificates \
+        bash \
+        util-linux \
+        kubeadm \
+        kubelet \
+        cni-plugins \
+        openrc"
+    ssh $NODE -C $" \
+      modprobe overlay
+      modprobe br_netfilter
+      sysctl -p /etc/sysctl.d/99-kubernetes.conf"
+    ssh $NODE -C $" \
+      swapoff -a && \
+      sed -i '/ swap / s/^/#/' /etc/fstab && \
+      rc-service containerd restart && \
+      rc-update add containerd default && \
+      rc-service kubelet restart && \
+      rc-update add kubelet default && \
+      containerd config default | sed 's/SystemdCgroup = true/SystemdCgroup = false/g' > /etc/containerd/config.toml && \
+      rc-service containerd restart"
+  fi
 done
 
 rm k8s.conf 99-kubernetes.conf
