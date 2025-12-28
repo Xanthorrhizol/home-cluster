@@ -6,4 +6,4 @@ if [ "$TAINT" == "node-role.kubernetes.io/control-plane" ]; then
 fi
 helm repo add nfs-subdir-external-provisioner	https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
 helm repo update
-helm install -n kube-system nfs-client nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
+helm install -n kube-system nfs-client nfs-subdir-external-provisioner/nfs-subdir-external-provisioner -f ./values.yaml
