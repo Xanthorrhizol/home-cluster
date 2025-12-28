@@ -7,3 +7,4 @@ ntpd.conf
 /pki
 /tmp
 /bind
+http-route.yaml
