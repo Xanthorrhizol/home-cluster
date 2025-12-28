@@ -7,10 +7,24 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
+echo "This is proxy node: ${PROXY_NODE}"
+echo "Setup proxy node"
+read -p "Press enter to continue"
+utils/deploy-kvm.sh ${PROXY_NODE} \
+  /var/lib/libvirt/images/${PROXY_NODE}.qcow2 \
+  generic \
+  ${PROXY_CPUS} \
+  ${PROXY_MEM} \
+  ${PROXY_DISK} \
+  ${OS_BOOT_ISO}
+
+virsh destroy ${PROXY_NODE}
+
 FIRST_CONTROLPLANE_NODE=${CONTROLPLANE_NODES[0]}
-echo "This is first controlplane node: ${FIRST_CONTROLPLANE_NODE}"
-echo "Setup first controlplane node"
-echo "The node will be copied to other controlplane nodes"
+echo "This is first control-plane node: ${FIRST_CONTROLPLANE_NODE}"
+echo "Setup first node"
+echo "**enable community repo too**"
+echo "The node will be copied to other proxy nodes"
 read -p "Press enter to continue"
 utils/deploy-kvm.sh ${FIRST_CONTROLPLANE_NODE} \
   /var/lib/libvirt/images/${FIRST_CONTROLPLANE_NODE}.qcow2 \
@@ -21,6 +35,8 @@ utils/deploy-kvm.sh ${FIRST_CONTROLPLANE_NODE} \
   ${OS_BOOT_ISO}
 
 virsh destroy ${FIRST_CONTROLPLANE_NODE}
+
+sleep 20
 
 # from second, deploy kvms with created
 for NODE in ${CONTROLPLANE_NODES[@]:1}; do
@@ -39,7 +55,8 @@ for NODE in ${CONTROLPLANE_NODES[@]:1}; do
 done
 
 echo "This is first worker node: ${FIRST_WORKER_NODE}"
-echo "Setup first worker node"
+echo "Setup first node"
+echo "**enable community repo too**"
 echo "The node will be copied to other worker nodes"
 read -p "Press enter to continue"
 FIRST_WORKER_NODE=${WORKER_NODES[0]}
@@ -52,6 +69,8 @@ utils/deploy-kvm.sh ${FIRST_WORKER_NODE} \
   ${OS_BOOT_ISO}
 
 virsh destroy ${FIRST_WORKER_NODE}
+
+sleep 20
 
 # from second, deploy kvms with created
 for NODE in ${WORKER_NODES[@]:1}; do
@@ -68,6 +87,8 @@ for NODE in ${WORKER_NODES[@]:1}; do
 
   virsh destroy ${NODE}
 done
+
+virsh start ${PROXY_NODE}
 
 for NODE in ${CONTROLPLANE_NODES[@]}; do
   virsh start ${NODE}

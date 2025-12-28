@@ -24,8 +24,24 @@ fi
 KVM_NETWORK_XML_PATH=$1
 
 pacman -S --noconfirm virt-install libvirt virt-viewer dnsmasq
-pacman -S --noconfirm kubectl kubectx helm
+pacman -S --noconfirm kubectl kubectx helm cilium-cli
 pacman -S --noconfirm jq yq htmlq
+
+if [ ! -d ~/.ssh ]; then
+  mkdir ~/.ssh
+fi
+
+if [ ! -f ~/.ssh/cluster_ed25519 ]; then
+  ssh-keygen -t ed25519 -f ~/.ssh/cluster_ed25519 -q -N ""
+fi
+
+utils/create-ssh-config.sh
+if [ ! -f ~/.ssh/config ]; then
+  cp ssh-config ~/.ssh/config
+else
+  echo "Insert ssh-config's content into your ~/.ssh/config"
+  read -p -r "Press enter to continue if you are done"
+fi
 
 systemctl enable --now libvirtd
 

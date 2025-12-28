@@ -3,3 +3,7 @@ config-*
 kubeconfig
 db.*
 named.conf
+ntpd.conf
+/pki
+/tmp
+/bind
