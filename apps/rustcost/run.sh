@@ -8,7 +8,7 @@ if [ $(kubectl get ns rustcost | grep rustcost | wc -l) -lt 1 ]; then
   kubectl create ns rustcost
 fi
 if [ $(helm list -n rustcost | grep rustcost | wc -l) -lt 1 ]; then
-  helm upgrade --install -n rustcost rustcost rustcost -f values.yaml
+  helm upgrade --install -n rustcost rustcost rustcost/rustcost -f values.yaml
 else 
-  helm install -n rustcost rustcost rustcost -f values.yaml
+  helm install -n rustcost rustcost rustcost/rustcost -f values.yaml
 fi
