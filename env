@@ -20,3 +20,6 @@ CONTROLPLANE_IPS=(10.0.1.1 10.0.1.2 10.0.1.3)
 WORKER_IPS=(10.0.2.1 10.0.2.2)
 CONTROLPLANE_ADDRESS="cp.my-home-cluster.local"
 DOMAIN="my-home-cluster.local"
+
+GPU_NODE=w-02
+GPU_PCI_ADDRS=(09:00.0 09:00.1)
