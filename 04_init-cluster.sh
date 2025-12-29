@@ -89,7 +89,7 @@ ssh $FIRST_CONTROLPLANE_NODE -C $" \
   --cri-socket=unix:///run/containerd/containerd.sock \
   --apiserver-advertise-address=${CONTROLPLANE_IPS[0]} \
   --apiserver-bind-port=6443 \
-  --apiserver-cert-extra-sans=${CONTROLPLANE_ADDRESS},${PROXY_IP},$(echo ${CONTROLPLANE_IPS[@]:1} | sed 's/ /,/g')"
+  --apiserver-cert-extra-sans=${CONTROLPLANE_ADDRESS},${PROXY_IP},$(for N in ${CONTROLPLANE_NODES[@]}; do printf $N.server.$DOMAIN,; done)$(echo ${CONTROLPLANE_IPS[@]:1} | sed 's/ /,/g')"
 
 # copy kubeconfig
 scp $FIRST_CONTROLPLANE_NODE:/etc/kubernetes/admin.conf kubeconfig
