@@ -6,7 +6,7 @@ if [ $(helm repo list | grep nvidia | wc -l) -eq 0 ]; then
 fi
 helm repo update
 if [ $(helm list | grep gpu-operator | wc -l) -eq 0 ]; then
-  helm install -n gpu-operator gpu-operator nvidia/gpu-operator
+  helm install --create-namespace -n gpu-operator gpu-operator nvidia/gpu-operator
 else
   helm upgrade -n gpu-operator gpu-operator nvidia/gpu-operator
 fi
