@@ -27,6 +27,12 @@ for NODE in ${NODES[@]}; do
         curl \
         gnupg \
         lsb-release \
+        conntrack \
+        kubernetes-cni \
+        iptables \
+        ethtool \
+        socat \
+        ebtables \
         containerd && \
       apt update && \
       containerd config default | sed 's/SystemdCgroup = true/SystemdCgroup = false/g' > /etc/containerd/config.toml && \
@@ -40,6 +46,10 @@ for NODE in ${NODES[@]}; do
       apt-get install -y kubelet kubeadm && \
       apt-mark hold kubelet kubeadm && \
       systemctl enable --now kubelet"
+    ssh $NODE -C $" \
+      modprobe overlay
+      modprobe br_netfilter
+      sysctl -p /etc/sysctl.d/99-kubernetes.conf"
     ssh $NODE -C $" \
       swapoff -a && \
       sed -i '/ swap / s/^/#/' /etc/fstab"
@@ -74,6 +84,9 @@ for NODE in ${NODES[@]}; do
       rc-update add kubelet default && \
       containerd config default | sed 's/SystemdCgroup = true/SystemdCgroup = false/g' > /etc/containerd/config.toml && \
       rc-service containerd restart"
+    ssh $NODE -C $" \
+      swapoff -a && \
+      sed -i '/ swap / s/^/#/' /etc/fstab"
   fi
 done
 
