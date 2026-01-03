@@ -74,6 +74,9 @@ sleep 20
 
 # from second, deploy kvms with created
 for NODE in ${WORKER_NODES[@]:1}; do
+  if [ $NODE == ${GPU_NODE} ]; then
+    continue
+  fi
   echo "This is worker node: ${NODE}"
   echo "Change the hostname and network interface ip address"
   read -p "Press enter to continue"
@@ -87,6 +90,23 @@ for NODE in ${WORKER_NODES[@]:1}; do
 
   virsh destroy ${NODE}
 done
+
+if [ ! -z ${GPU_NODE} ]; then
+  echo "This is the GPU worker node: ${GPU_NODE}"
+  echo "Setup first node"
+  echo "**enable community repo too**"
+  echo "The node will be copied to other worker nodes"
+  read -p "Press enter to continue"
+  utils/deploy-kvm.sh ${GPU_NODE} \
+    /var/lib/libvirt/images/${GPU_NODE}.qcow2 \
+    generic \
+    ${WORKER_CPUS} \
+    ${WORKER_MEM} \
+    ${WORKER_DISK} \
+    ${GPU_NODE_OS_BOOT_ISO}
+  
+  virsh destroy ${GPU_NODE}
+fi
 
 virsh start ${GW_NODE}
 

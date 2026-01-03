@@ -14,13 +14,24 @@ NODES=($GW_NODE ${CONTROLPLANE_NODES[@]} ${WORKER_NODES[@]})
 # bootstrap servers
 for NODE in ${NODES[@]}; do
   scp ntpd.conf $NODE:/etc/ntpd.conf
-  ssh $NODE -C $" \
-    rc-service ntpd restart && \
-    rc-update add ntpd default && \
-    echo 'change dns into your dns server' && \
-    setup-dns"
   if [ $NODE == $GPU_NODE ]; then
-    ssh $NODE -C "apk add gcompat"
+    # Ubuntu
+    ssh $NODE -C $" \
+      systemctl restart ntpd && \
+      systemctl enable ntpd && \
+      systemctl disable --now systemd-resolved && \
+      apt-get remove -y systemd-resolved && \
+      echo \"nameserver ${GW_IP}\" > /etc/resolv.conf && \
+      echo 'change dns into your dns server' && \
+      read -p 'Press enter to continue' && \
+      vi /etc/netplan/50-cloud-init.yaml"
+  else
+    # Alpine
+    ssh $NODE -C $" \
+      rc-service ntpd restart && \
+      rc-update add ntpd default && \
+      echo 'change dns into your dns server' && \
+      setup-dns"
   fi
   ssh $NODE -C "apk add nfs-utils"
 done

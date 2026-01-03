@@ -1,4 +1,5 @@
 OS_BOOT_ISO=/var/lib/libvirt/boot/alpine-standard-3.23.0-x86_64.iso
+GPU_NODE_OS_BOOT_ISO=/var/lib/libvirt/boot/ubuntu-24.04.3-live-server-amd64.iso
 GW_NODE=proxy
 CONTROLPLANE_NODES=(cp-01 cp-02 cp-03)
 WORKER_NODES=(w-01 w-02)
