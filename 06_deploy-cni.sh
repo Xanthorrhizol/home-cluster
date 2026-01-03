@@ -5,9 +5,8 @@ source ./env
 NODES=(${CONTROLPLANE_NODES[@]} ${WORKER_NODES[@]})
 for NODE in ${NODES[@]}; do
   ssh $NODE -C $" \
-    apk add cni-plugins && \
-    if [ ! -d /opt/cni/bin ]; then mkdir -p /opt/cni/bin; fi && \
-    ln -s /usr/libexec/cni/* /opt/cni/bin/"
+    mount --make-shared /sys && \
+    mount --make-shared /run"
 done
 
-kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+kubectl apply -f  https://raw.githubusercontent.com/projectcalico/calico/v3.31.3/manifests/canal.yaml
