@@ -9,29 +9,18 @@ servers 2.kr.pool.ntp.org
 servers 3.kr.pool.ntp.org
 EOF
 
-NODES=(${PROXY_NODES[@]} ${CONTROLPLANE_NODES[@]} ${WORKER_NODES[@]})
+NODES=($GW_NODE ${CONTROLPLANE_NODES[@]} ${WORKER_NODES[@]})
 
 # bootstrap servers
 for NODE in ${NODES[@]}; do
   scp ntpd.conf $NODE:/etc/ntpd.conf
+  ssh $NODE -C $" \
+    rc-service ntpd restart && \
+    rc-update add ntpd default && \
+    echo 'change dns into your dns server' && \
+    setup-dns"
   if [ $NODE == $GPU_NODE ]; then
-    # Ubuntu
-    ssh $NODE -C $" \
-      systemctl restart ntpd && \
-      systemctl enable ntpd && \
-      systemctl disable --now systemd-resolved && \
-      apt-get remove -y systemd-resolved && \
-      echo \"nameserver ${PROXY_IP}\" > /etc/resolv.conf && \
-      echo 'change dns into your dns server' && \
-      read -p 'Press enter to continue' && \
-      vi /etc/netplan/50-cloud-init.yaml"
-  else
-    # Alpine
-    ssh $NODE -C $" \
-      rc-service ntpd restart && \
-      rc-update add ntpd default && \
-      echo 'change dns into your dns server' && \
-      setup-dns"
+    ssh $NODE -C "apk add gcompat"
   fi
 done
 

@@ -18,5 +18,5 @@ cat << EOF > bind/db.$DOMAIN
 
 $(i=0; for NODE in ${CONTROLPLANE_NODES[@]}; do echo "$NODE.server.$DOMAIN. IN A ${CONTROLPLANE_IPS[$i]}"; ((i++)); done)
 $(i=0; for NODE in ${WORKER_NODES[@]}; do echo "$NODE.server.$DOMAIN. IN A ${WORKER_IPS[$i]}"; ((i++)); done)
-*   IN  A   $PROXY_IP
+*   IN  A   $GW_IP
 EOF

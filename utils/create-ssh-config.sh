@@ -2,8 +2,8 @@
 source ./env
 
 cat << EOF > ssh-config
-Host proxy
-  HostName $PROXY_IP
+Host gw
+  HostName $GW_IP
   User root
   IdentityFile ~/.ssh/cluster_ed25519
 

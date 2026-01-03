@@ -68,7 +68,7 @@ options {
 	forward only;
 
 	// Configure the IPs to listen on here.
-	listen-on { $PROXY_IP; };
+	listen-on { $GW_IP; };
 	listen-on-v6 { none; };
 
 	// If you have problems and are behind a firewall:

@@ -7,8 +7,8 @@ if [ ! -d bind ]; then
   mkdir bind
 fi
 ./utils/create-bind-db.sh
-scp bind/db.$DOMAIN $PROXY_NODE:/etc/bind/
-ssh $PROXY_NODE -C $" \
+scp bind/db.$DOMAIN $GW_NODE:/etc/bind/
+ssh $GW_NODE -C $" \
   rc-service named restart && \
   rc-update add named default"
 

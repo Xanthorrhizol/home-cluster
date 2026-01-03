@@ -7,18 +7,18 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
-echo "This is proxy node: ${PROXY_NODE}"
+echo "This is proxy node: ${GW_NODE}"
 echo "Setup proxy node"
 read -p "Press enter to continue"
-utils/deploy-kvm.sh ${PROXY_NODE} \
-  /var/lib/libvirt/images/${PROXY_NODE}.qcow2 \
+utils/deploy-kvm.sh ${GW_NODE} \
+  /var/lib/libvirt/images/${GW_NODE}.qcow2 \
   generic \
-  ${PROXY_CPUS} \
-  ${PROXY_MEM} \
-  ${PROXY_DISK} \
+  ${GW_CPUS} \
+  ${GW_MEM} \
+  ${GW_DISK} \
   ${OS_BOOT_ISO}
 
-virsh destroy ${PROXY_NODE}
+virsh destroy ${GW_NODE}
 
 FIRST_CONTROLPLANE_NODE=${CONTROLPLANE_NODES[0]}
 echo "This is first control-plane node: ${FIRST_CONTROLPLANE_NODE}"
@@ -74,9 +74,6 @@ sleep 20
 
 # from second, deploy kvms with created
 for NODE in ${WORKER_NODES[@]:1}; do
-  if [ $NODE == ${GPU_NODE} ]; then
-    continue
-  fi
   echo "This is worker node: ${NODE}"
   echo "Change the hostname and network interface ip address"
   read -p "Press enter to continue"
@@ -91,24 +88,7 @@ for NODE in ${WORKER_NODES[@]:1}; do
   virsh destroy ${NODE}
 done
 
-if [ ! -z ${GPU_NODE} ]; then
-  echo "This is the GPU worker node: ${GPU_NODE}"
-  echo "Setup first node"
-  echo "**enable community repo too**"
-  echo "The node will be copied to other worker nodes"
-  read -p "Press enter to continue"
-  utils/deploy-kvm.sh ${GPU_NODE} \
-    /var/lib/libvirt/images/${GPU_NODE}.qcow2 \
-    generic \
-    ${WORKER_CPUS} \
-    ${WORKER_MEM} \
-    ${WORKER_DISK} \
-    ${GPU_NODE_OS_BOOT_ISO}
-  
-  virsh destroy ${GPU_NODE}
-fi
-
-virsh start ${PROXY_NODE}
+virsh start ${GW_NODE}
 
 for NODE in ${CONTROLPLANE_NODES[@]}; do
   virsh start ${NODE}
