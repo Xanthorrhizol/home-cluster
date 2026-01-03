@@ -22,6 +22,7 @@ for NODE in ${NODES[@]}; do
   if [ $NODE == $GPU_NODE ]; then
     ssh $NODE -C "apk add gcompat"
   fi
+  ssh $NODE -C "apk add nfs-utils"
 done
 
 rm ntpd.conf
