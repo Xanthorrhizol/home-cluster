@@ -12,7 +12,7 @@ metadata:
 spec:
   parentRefs:
     - name: home-gateway
-      namespace: gateway-api
+      namespace: envoy-gateway-system
   hostnames:
     - cost.${DOMAIN}
   rules:
