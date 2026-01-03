@@ -34,6 +34,8 @@ for NODE in ${NODES[@]}; do
         socat \
         ebtables \
         containerd && \
+      mkdir -p /etc/containerd && \
+      containerd config default | tee /etc/containerd/config.toml >/dev/null && \
       apt update && \
       containerd config default | sed 's/SystemdCgroup = true/SystemdCgroup = false/g' > /etc/containerd/config.toml && \
       systemctl restart containerd && \
