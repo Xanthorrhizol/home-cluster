@@ -41,7 +41,7 @@ if [ ! -f ~/.ssh/config ]; then
   cp ssh-config ~/.ssh/config
 else
   echo "Insert ssh-config's content into your ~/.ssh/config"
-  read -p -r "Press enter to continue if you are done"
+  read -p "Press enter to continue if you are done"
 fi
 
 systemctl enable --now libvirtd
