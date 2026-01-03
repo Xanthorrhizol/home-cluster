@@ -25,6 +25,7 @@ for NODE in ${NODES[@]}; do
       echo 'change dns into your dns server' && \
       read -p 'Press enter to continue' && \
       vi /etc/netplan/50-cloud-init.yaml"
+    ssh $NODE -C "apt-get install -y nfs-common"
   else
     # Alpine
     ssh $NODE -C $" \
@@ -32,8 +33,8 @@ for NODE in ${NODES[@]}; do
       rc-update add ntpd default && \
       echo 'change dns into your dns server' && \
       setup-dns"
+    ssh $NODE -C "apk add nfs-utils"
   fi
-  ssh $NODE -C "apk add nfs-utils"
 done
 
 rm ntpd.conf
