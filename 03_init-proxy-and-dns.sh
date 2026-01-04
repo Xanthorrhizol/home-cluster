@@ -11,7 +11,7 @@ if [ ! -d bind ]; then
   mkdir bind
 fi
 ./utils/create-named.conf.sh
-./utils/create-temporal-bind-db.sh
+./utils/create-bind-db.sh
 scp bind/* $GW_NODE:/etc/bind/
 ssh $GW_NODE -C $" \
   rc-service named restart && \

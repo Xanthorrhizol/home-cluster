@@ -2,7 +2,7 @@
 
 ## Cluster Info
 
-- OS: Alpine Linux 3.23
+- OS: Ubuntu 24.04
 - Nodes: 3 Master, 2 Worker by KVM
 - Cluster Provisioner: kubeadm
 - Storage: NFS
@@ -17,6 +17,7 @@
 
 ## VM Info
 
-- GW:(1): 2 vCPU, 4GB RAM, 32GB Disk, Alpine Linux 3.23
-- Master(3): 2 vCPU, 4GB RAM, 32GB Disk, Alpine Linux 3.23
-- Worker(2): 6 vCPU, 20GB RAM, 64GB Disk, Alpine Linux 3.23
+- GW(1): 2 vCPU, 4GB RAM, 32GB Disk, Alpine Linux 3.23
+- NFS(1): 2 vCPU, 2GB RAM, 32GB Disk, Alpine Linux 3.23
+- Master(3): 2 vCPU, 4GB RAM, 32GB Disk, Ubuntu 24.04
+- Worker(2): 6 vCPU, 20GB RAM, 64GB Disk, Ubuntu 24.04
