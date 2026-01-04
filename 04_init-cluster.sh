@@ -5,6 +5,7 @@ source ./env
 # prepare config files
 cat <<EOF > k8s.conf
 overlay
+nf_conntrack
 br_netfilter
 EOF
 cat <<EOF > 99-kubernetes.conf
