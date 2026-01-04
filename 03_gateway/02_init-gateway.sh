@@ -1,6 +1,6 @@
 #!/bin/bash
 cd $(dirname "$(readlink -f "$0")")
-source ./env
+source ../env
 
 # create CA pem file
 ./utils/create-ca.sh

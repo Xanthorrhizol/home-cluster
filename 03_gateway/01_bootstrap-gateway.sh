@@ -1,6 +1,6 @@
 #!/bin/bash
 cd $(dirname "$(readlink -f "$0")")
-source ./env
+source ../env
 
 cat << EOF > ntpd.conf
 servers 0.kr.pool.ntp.org

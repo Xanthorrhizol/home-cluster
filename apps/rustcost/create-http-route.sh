@@ -1,8 +1,7 @@
 #!/bin/bash
 cd $(dirname "$(readlink -f "$0")")
 source ../../env
-kubectl label ns rustcost gateway-access=true
-
+kubectl label --overwrite ns rustcost gateway-access=true
 cat << EOF > http-route.yaml
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute

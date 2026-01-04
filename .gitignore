@@ -8,3 +8,5 @@ ntpd.conf
 /tmp
 /bind
 http-route.yaml
+customization.yaml
+ssh-config

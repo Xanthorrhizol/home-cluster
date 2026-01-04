@@ -11,12 +11,9 @@
 
 - `00_prepare.sh`: prepare the environment
 - `01_deploy-kvm.sh`: deploy KVMs in once
-- `02_bootstrap.sh`: bootstrap the VMs
-- `03_init-proxy-and-dns.sh`: init proxy and dns to init cluster(there is a temporal dns setting)
-- `04_init-cluster.sh`: init the cluster
-- `05_update-dns.sh`: update the dns to remove temporal dns setting
-- `06_deploy-cni.sh`: deploy cni(cilium)
-- `07_gpu-passthrough.sh`: pass GPU into the cluster *but you have a lot of preparations*
+- `02_gpu-passthrough.sh`: pass GPU into the cluster *but you have a lot of preparations*
+- `03_gateway/*`: setup the gateway that contains haproxy and dns
+- `04_cluster/*`: setup the k8s cluster with talos linux
 - `apps`: apps in the cluster
 - `CLUSTER.md`: the document of the cluster info of mine
 - `env`: settings of the cluster
@@ -25,11 +22,13 @@
 
 ## Usage
 
-1. Run each scripts step by step from `00_prepare.sh` to `06_deploy-cni.sh`.
+1. Run each scripts step by step from `00_prepare.sh` to `01_deploy-kvm.sh`.
 2. If you want to pass GPU into the cluster, follow it.
   - Prepare the environment below(GPU Passthrough preparation).
   - Fill `env` file's relational fields: GPU_NODE, GPUS_PCI_ADDRS.
-  - Run`07_gpu-passthrough.sh`.
+  - Run`02_gpu-passthrough.sh`.
+3. Run `03_gateway/*` to setup the gateway.
+4. Run `04_cluster/*` to setup the k8s cluster.
 
 > ### GPU Passthrough preparation
 >

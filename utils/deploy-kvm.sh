@@ -73,11 +73,6 @@ fi
 
 validate $NAME $IMAGE $OS_VARIANT $CPUS $MEM $DISK $ISO
 
-OVMF_CODE=/usr/share/OVMF/x64/OVMF_CODE.4m.fd
-OVMF_VARS_TEMPLATE=/usr/share/OVMF/x64/OVMF_VARS.4m.fd
-
-BOOTLOADER_PARAMS="loader=\"$OVMF_CODE\",loader.readonly=yes,loader.type=pflash,nvram_template=\"$OVMF_VARS_TEMPLATE\""
-
 if [ $CPUS -gt 4 ]; then
   QUEUES=4
 else

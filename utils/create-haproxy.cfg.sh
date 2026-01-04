@@ -74,27 +74,27 @@ frontend  http
     http-request set-header X-Forwarded-Proto http if !{ ssl_fc } 
     http-request redirect scheme https code 301 unless { ssl_fc }
 
+    acl domain_nas  hdr_beg(host) -i nas.
+    acl domain_nas_explorer hdr_beg(host) -i nas-explorer.
     acl domain_app  hdr_end(host) -i $DOMAIN
 
+    use_backend be_nas if domain_nas domain_app
+    use_backend be_nas_explorer if domain_nas_explorer domain_app
+
     use_backend be_app if domain_app
-
-frontend fe_cp
-    bind *:6443
-    option tcplog
-    mode tcp
-
-   default_backend be_cp
 
 #---------------------------------------------------------------------
 # round robin balancing between the various backends
 #---------------------------------------------------------------------
-backend be_cp
-    mode tcp
-    balance roundrobin
-    option tcp-check
-$(i=0; for NODE in ${CONTROLPLANE_NODES[@]}; do echo "    server      $NODE ${CONTROLPLANE_IPS[$i]}:6443 check"; ((i++)); done)
-
 backend be_app
     balance roundrobin
 $(i=0; for NODE in ${WORKER_NODES[@]}; do echo "    server      $NODE ${WORKER_IPS[$i]}:80 check"; ((i++)); done)
+
+backend be_nas
+    balance roundrobin
+    server      nas $NAS_IP:80 check
+
+backend be_nas_explorer
+    balance roundrobin
+    server      nas_explorer $NAS_IP:3670 check
 EOF
