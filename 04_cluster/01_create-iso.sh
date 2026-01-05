@@ -1,15 +1,14 @@
 #!/bin/bash
 function usage() {
-  echo "Usage: $0 <machine architecture> <talos-linux version> <output file> {machineconfig providing server ip}"
-  echo "Example: $0 amd64 v1.11.5 talos.iso"
-  echo "         $0 arm64 v1.11.5 talos.iso"
+  echo "Usage: $0 <machine architecture> <output file> {machineconfig providing server ip}"
+  echo "Example: $0 amd64 talos.iso 10.0.0.1"
+  echo "         $0 arm64 talos.iso"
 }
 
 function validate() {
   ARCH=$1
-  TALOS_LINUX_VERSION=$2
-  OUTPUT=$3
-  CONFIG_SERVER_IP=$4
+  OUTPUT=$2
+  CONFIG_SERVER_IP=$3
 
   case $ARCH in
     amd64|arm64)
@@ -21,12 +20,6 @@ function validate() {
       ;;
   esac
   
-  if [ $(echo $TALOS_LINUX_VERSION | grep -E 'v[0-9]+\.[0-9]+\.[0-9]+$' | wc -l) -ne 1 ]; then
-    echo "$TALOS_LINUX_VERSION is not a valid version"
-    usage
-    exit 1
-  fi
-
   if [ -f $OUTPUT ]; then
     echo "$OUTPUT already exists"
     read -p "Do you want to overwrite $OUTPUT? (y/n) " -n 1 -r
@@ -49,10 +42,11 @@ if [ "$#" -lt 3 ]; then
 fi
 
 cd $(dirname "$(readlink -f "$0")")
+source ../env
+
 ARCH=$1
-TALOS_LINUX_VERSION=$2
-OUTPUT=$3
-CONFIG_SERVER_IP=$4
+OUTPUT=$2
+CONFIG_SERVER_IP=$3
 if [ -z $CONFIG_SERVER_IP ]; then
   CONFIG_SERVER_IP=$(ip route get 8.8.8.8 | awk '{print $7}')
 fi
@@ -66,7 +60,6 @@ customization:
         officialExtensions:
             - siderolabs/amd-ucode
             - siderolabs/iscsi-tools
-            - siderolabs/nfs-utils
             - siderolabs/nvidia-container-toolkit-lts
             - siderolabs/nvidia-open-gpu-kernel-modules-lts
 EOF

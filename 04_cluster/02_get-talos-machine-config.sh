@@ -7,16 +7,9 @@ cd $(dirname "$(readlink -f "$0")")
 source ../env
 
 SCHMATIC_ID=$1
-TALOS_LINUX_VERSION=$2
 
 if [ -z $SCHMATIC_ID ]; then
   echo "Semantic ID is required"
-  usage
-  exit 1
-fi
-
-if [ -z $TALOS_LINUX_VERSION ]; then
-  echo "Talos Linux version is required"
   usage
   exit 1
 fi
@@ -31,7 +24,9 @@ CLUSTER_NAME=k8s-cluster
 # create talos secrets
 INITIAL_CONTROL_PLANE_IP=${CONTROLPLANE_IPS[0]}
 talosctl gen secrets -o secrets.yaml
-talosctl gen config --with-secrets $CURRENT_DIR/secrets.yaml $CLUSTER_NAME https://$INITIAL_CONTROL_PLANE_IP:6443
+talosctl gen config --with-secrets $CURRENT_DIR/secrets.yaml $CLUSTER_NAME https://$INITIAL_CONTROL_PLANE_IP:6443 --install-image factory.talos.dev/installer/$SCHEMATIC_ID:$TALOS_LINUX_VERSION
+sed -i '/grubUseUKICmdline/d' controlplane.yaml
+sed -i '/grubUseUKICmdline/d' worker.yaml
 
 # create controlplane configs
 I=0
@@ -70,23 +65,23 @@ cluster:
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
+auto: "off"
 hostname: $NODE.server.$DOMAIN
-auto: off
 EOF
-    mkdir -p $TARGET_DIR
-    talosctl machineconfig patch controlplane.yaml --patch @controlplane-patch-$(($I + 1)).yaml --output $TARGET_DIR/machineconfig.yaml
-    rm $PATCH_FILENAME
-    I=$(($I + 1))
+  mkdir -p $TARGET_DIR
+  talosctl machineconfig patch controlplane.yaml --patch @controlplane-patch-$(($I + 1)).yaml --output $TARGET_DIR/machineconfig.yaml
+  rm $PATCH_FILENAME
+  I=$(($I + 1))
 done
 
 # create worker configs
 I=0
 for NODE in ${WORKER_NODES[@]}; do
-    TARGET_DIR=$CURRENT_DIR/worker-$(($I + 1))
-    NODE_IP=${WORKER_IPS[$I]}
-    NAS_NET_IP=${WORKER_NAS_NET_IPS[$I]}
-    PATCH_FILENAME=worker-patch-$(($I + 1)).yaml
-        cat << EOF > $PATCH_FILENAME
+  TARGET_DIR=$CURRENT_DIR/worker-$(($I + 1))
+  NODE_IP=${WORKER_IPS[$I]}
+  NAS_NET_IP=${WORKER_NAS_NET_IPS[$I]}
+  PATCH_FILENAME=worker-patch-$(($I + 1)).yaml
+  cat << EOF > $PATCH_FILENAME
 machine:
   install:
     image: factory.talos.dev/installer/$SCHMATIC_ID:$TALOS_LINUX_VERSION
@@ -117,11 +112,11 @@ machine:
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
+auto: "off"
 hostname: $NODE.server.$DOMAIN
-auto: off
 EOF
-    mkdir -p $TARGET_DIR
-    talosctl machineconfig patch worker.yaml --patch @worker-patch-$(($I + 1)).yaml --output $TARGET_DIR/machineconfig.yaml
-    rm $PATCH_FILENAME
-    I=$(($I + 1))
+  mkdir -p $TARGET_DIR
+  talosctl machineconfig patch worker.yaml --patch @worker-patch-$(($I + 1)).yaml --output $TARGET_DIR/machineconfig.yaml
+  rm $PATCH_FILENAME
+  I=$(($I + 1))
 done
