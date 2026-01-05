@@ -1,6 +1,6 @@
 #!/bin/bash
 function usage() {
-  echo "Usage: $0 <semantic-id> <talos-linux version>"
+  echo "Usage: $0 <schematic-id> <talos-linux version>"
 }
 
 cd $(dirname "$(readlink -f "$0")")
