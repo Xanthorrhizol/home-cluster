@@ -62,6 +62,11 @@ machine:
           - $NAS_NET_IP/$NAS_NET_SUBNET_BITS
     nameservers:
       - $GW_IP
+cluster:
+  apiServer:
+    certSANs:
+      - $VIRTUAL_IP
+      - $CONTROLPLANE_ADDRESS
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
