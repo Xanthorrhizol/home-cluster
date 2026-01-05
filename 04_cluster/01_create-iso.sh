@@ -67,8 +67,8 @@ customization:
             - siderolabs/amd-ucode
             - siderolabs/iscsi-tools
             - siderolabs/nfs-utils
-            - siderolabs/nonfree-kmod-nvidia-lts
             - siderolabs/nvidia-container-toolkit-lts
+            - siderolabs/nvidia-open-gpu-kernel-modules-lts
 EOF
 
 SCHEMATIC_ID=$(curl -XPOST https://factory.talos.dev/schematics \
