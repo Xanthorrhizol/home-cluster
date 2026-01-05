@@ -82,6 +82,7 @@ if [ $(echo $FIND_RESULT | htmlq -t) == "Found." ]; then
   DOWNLOAD_URL=$(echo $FIND_RESULT | htmlq a -a href)
   echo "SCHEMATIC_ID=$SCHEMATIC_ID"
   echo "INSTALLER_IMAGE=factory.talos.dev/installer/$SCHEMATIC_ID:$TALOS_LINUX_VERSION"
+  echo "DOWNLOAD_URL=$DOWNLOAD_URL"
   read -p "Download iso image with schematic_id=$SCHEMATIC_ID. Press enter to continue" -n 1 -r
   curl $DOWNLOAD_URL -o $OUTPUT
 else
