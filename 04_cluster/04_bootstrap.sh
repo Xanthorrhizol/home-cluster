@@ -21,4 +21,4 @@ TALOSCONFIG_PATH=$1
 talosctl bootstrap \
   --talosconfig $TALOSCONFIG_PATH \
   --nodes ${CONTROLPLANE_NODES[0]} \
-  --endpoints $VIRTUAL_IP,$(echo ${CONTROLPLANE_IPS[@]} | tr ' ' ',')
+  --endpoints $(echo ${CONTROLPLANE_IPS[@]} | tr ' ' ',')

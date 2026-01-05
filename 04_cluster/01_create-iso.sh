@@ -65,12 +65,10 @@ customization:
     systemExtensions:
         officialExtensions:
             - siderolabs/amd-ucode
-            - siderolabs/amdgpu
             - siderolabs/iscsi-tools
-            - siderolabs/nfsrahead
+            - siderolabs/nfs-utils
+            - siderolabs/nonfree-kmod-nvidia-lts
             - siderolabs/nvidia-container-toolkit-lts
-            - siderolabs/nvidia-fabricmanager-lts
-            - siderolabs/nvidia-open-gpu-kernel-modules-lts
 EOF
 
 SCHEMATIC_ID=$(curl -XPOST https://factory.talos.dev/schematics \
@@ -78,12 +76,13 @@ SCHEMATIC_ID=$(curl -XPOST https://factory.talos.dev/schematics \
   -H "Accept: application/json" \
   -d $"$(cat customization.yaml | yq)" 2>/dev/null | jq '.id' | tr -d '"')
 
-read -p "Download iso image with schematic_id=$SCHEMATIC_ID. Press enter to continue" -n 1 -r
-
 FIND_RESULT=$(curl -XGET https://factory.talos.dev/image/$SCHEMATIC_ID/$TALOS_LINUX_VERSION/metal-$ARCH.iso)
 
 if [ $(echo $FIND_RESULT | htmlq -t) == "Found." ]; then
   DOWNLOAD_URL=$(echo $FIND_RESULT | htmlq a -a href)
+  echo "SCHEMATIC_ID=$SCHEMATIC_ID"
+  echo "INSTALLER_IMAGE=factory.talos.dev/installer/$SCHEMATIC_ID:$TALOS_LINUX_VERSION"
+  read -p "Download iso image with schematic_id=$SCHEMATIC_ID. Press enter to continue" -n 1 -r
   curl $DOWNLOAD_URL -o $OUTPUT
 else
   echo "Failed to download iso image with schematic_id=$SCHEMATIC_ID"

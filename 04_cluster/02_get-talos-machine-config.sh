@@ -1,6 +1,25 @@
 #!/bin/bash
+function usage() {
+  echo "Usage: $0 <semantic-id> <talos-linux version>"
+}
+
 cd $(dirname "$(readlink -f "$0")")
 source ../env
+
+SCHMATIC_ID=$1
+TALOS_LINUX_VERSION=$2
+
+if [ -z $SCHMATIC_ID ]; then
+  echo "Semantic ID is required"
+  usage
+  exit 1
+fi
+
+if [ -z $TALOS_LINUX_VERSION ]; then
+  echo "Talos Linux version is required"
+  usage
+  exit 1
+fi
 
 RUN_DT=$(date +%Y%m%d%H%M%S)
 mkdir config-$RUN_DT
@@ -23,6 +42,8 @@ for NODE in ${CONTROLPLANE_NODES[@]}; do
   PATCH_FILENAME=controlplane-patch-$(($I + 1)).yaml
   cat << EOF > $PATCH_FILENAME
 machine:
+  install:
+    image: factory.talos.dev/installer/$SCHMATIC_ID:$TALOS_LINUX_VERSION
   network:
     interfaces:
       - interface: $TALOS_NIC
@@ -62,6 +83,8 @@ for NODE in ${WORKER_NODES[@]}; do
     PATCH_FILENAME=worker-patch-$(($I + 1)).yaml
         cat << EOF > $PATCH_FILENAME
 machine:
+  install:
+    image: factory.talos.dev/installer/$SCHMATIC_ID:$TALOS_LINUX_VERSION
   network:
     interfaces:
       - interface: $TALOS_NIC  # From control plane node
@@ -78,6 +101,14 @@ machine:
           - $NAS_NET_IP/$NAS_NET_SUBNET_BITS
     nameservers:
       - $GW_IP
+  kernel:
+    modules:
+      - name: nvidia
+      - name: nvidia_uvm
+      - name: nvidia_drm
+      - name: nvidia_modeset
+  sysctls:
+    net.core.bpf_jit_harden: 1
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
