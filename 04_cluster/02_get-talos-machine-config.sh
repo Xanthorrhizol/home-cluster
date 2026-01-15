@@ -62,6 +62,13 @@ cluster:
     certSANs:
       - $VIRTUAL_IP
       - $CONTROLPLANE_ADDRESS
+  network:
+    cni:
+      name: canal
+      urls:
+        - https://raw.githubusercontent.com/projectcalico/calico/v3.31.3/manifests/canal.yaml
+    podSubnets:
+      - 10.244.0.0/16
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
@@ -109,6 +116,14 @@ machine:
       - name: nvidia_modeset
   sysctls:
     net.core.bpf_jit_harden: 1
+cluster:
+  network:
+    cni:
+      name: canal
+      urls:
+        - https://raw.githubusercontent.com/projectcalico/calico/v3.31.3/manifests/canal.yaml
+    podSubnets:
+      - 10.244.0.0/16
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
