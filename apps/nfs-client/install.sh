@@ -7,4 +7,4 @@ fi
 
 helm repo add nfs-subdir-external-provisioner	https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
 helm repo update
-helm install -n kube-system $4 nfs-subdir-external-provisioner/nfs-subdir-external-provisioner --set nfs.server=$1 --set nfs.path=$2 --set nfs.reclaimPolicy=$3 --set storageClass.name=$4
+helm install -n kube-system $4 nfs-subdir-external-provisioner/nfs-subdir-external-provisioner --set nfs.server=$1 --set nfs.path=$2 --set storageClass.reclaimPolicy=$3 --set storageClass.name=$4
