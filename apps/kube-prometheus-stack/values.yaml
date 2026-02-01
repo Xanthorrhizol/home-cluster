@@ -1,0 +1,18 @@
+alertmanager:
+  alertmanagerSpec:
+    storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: nas-nfs-client
+
+grafana:
+  persistence:
+    enabled: true
+    type: sts
+    storageClassName: nas-nfs-client
+
+prometheus:
+  prometheusSpec:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: nas-nfs-client
