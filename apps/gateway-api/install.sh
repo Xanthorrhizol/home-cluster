@@ -1,6 +1,7 @@
 #!/bin/bash
 cd $(dirname "$(readlink -f "$0")")
-kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
-kubectl apply --server-side -f https://github.com/envoyproxy/gateway/releases/download/v1.6.1/install.yaml
+helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.6.3 -n envoy-gateway-system --create-namespace
+kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
+
 kubectl apply -f gateway-class.yaml
 kubectl apply -f gateway.yaml
