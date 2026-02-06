@@ -47,7 +47,7 @@ machine:
           - $NODE_IP/$CLUSTER_NET_SUBNET_BITS
         routes:
           - network: 0.0.0.0/0
-            gateway: $GW_IP
+            gateway: $NET_GW_IP
         mtu: 1500
         vip:
           ip: $VIRTUAL_IP
@@ -100,7 +100,7 @@ machine:
           - $NODE_IP/$CLUSTER_NET_SUBNET_BITS
         routes:
           - network: 0.0.0.0/0
-            gateway: $GW_IP
+            gateway: $NET_GW_IP
         mtu: 1500
       - interface: $TALOS_NIC_FOR_NAS
         dhcp: false
