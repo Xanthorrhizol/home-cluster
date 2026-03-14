@@ -15,3 +15,12 @@ spec:
           selector:
             matchLabels:
               gateway-access: "true"
+    - name: postgres
+      protocol: TCP
+      port: 5432
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              gateway-access: "true"

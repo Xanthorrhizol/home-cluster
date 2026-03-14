@@ -1,0 +1,41 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: db
+  namespace: database
+spec:
+  instances: 1
+
+  storage:
+    storageClass: ssd-nfs-client
+    size: 200Gi
+
+  tablespaces:
+    - name: cold
+      storage:
+        pvcTemplate:
+          accessModes:
+            - ReadWriteMany
+          storageClassName: nas-nfs-client
+          resources:
+            requests:
+              storage: 2Ti
+
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "512MB"
+      work_mem: "16MB"
+  bootstrap:
+    initdb:
+      database: postgres
+      owner: admin
+      secret:
+        name: db-credentials
+
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
