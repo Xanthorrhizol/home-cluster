@@ -13,6 +13,13 @@ grafana:
 
 prometheus:
   prometheusSpec:
-    volumeClaimTemplate:
-      spec:
-        storageClassName: nas-nfs-client
+    retention: ""
+    retentionSize: "1TB"
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: nas-nfs-client
+          accesModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
