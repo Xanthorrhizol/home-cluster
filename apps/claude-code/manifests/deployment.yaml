@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claude-code
+  namespace: claude-code
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: claude-code
+  template:
+    metadata:
+      labels:
+        app: claude-code
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: claude-code
+          image: IMAGE
+          ports:
+            - containerPort: 7681
+          env:
+            - name: TZ
+              value: Asia/Seoul
+            - name: TTYD_USER
+              valueFrom:
+                secretKeyRef:
+                  name: claude-code-secret
+                  key: ttyd-user
+            - name: TTYD_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: claude-code-secret
+                  key: ttyd-pass
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: nfs-workspace
+              mountPath: /root
+          readinessProbe:
+            tcpSocket:
+              port: 7681
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 7681
+            initialDelaySeconds: 15
+            periodSeconds: 30
+      volumes:
+        - name: nfs-workspace
+          persistentVolumeClaim:
+            claimName: claude-code-workspace
