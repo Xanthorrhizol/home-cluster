@@ -1,0 +1,8 @@
+global:
+  domain: argocd.my-home-cluster.local
+
+server:
+  ingress:
+    enabled: false  # Gateway API HTTPRoute is used
+  extraArgs:
+    - --insecure
